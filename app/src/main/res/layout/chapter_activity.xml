@@ -13,7 +13,7 @@
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         app:layout_scrollFlags="scroll|enterAlways"
-        android:background="@color/prayer_book_primary" />
+        android:background="@color/grandpaj_primary" />
     <FrameLayout
         android:id="@+id/chapter_container"
         android:layout_width="match_parent"

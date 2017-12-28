@@ -23,7 +23,7 @@ public class App extends Application {
     private Handler mBackgroundHandler;
 
     private static volatile App mApp;
-    private static final int LatestDatabaseVersion = 1;
+    private static final int LatestDatabaseVersion = 2;
 
     public static App getApp() {
         return mApp;
@@ -48,7 +48,7 @@ public class App extends Application {
         int dbVersion = Prefs.get(this).getDatabaseVersion();
         File databaseFile = new File(getFilesDir(), "pjdb.db");
         DB.databaseFile = databaseFile;
-        if (dbVersion != LatestDatabaseVersion) {
+        if (dbVersion != LatestDatabaseVersion || 1 == 1) {
             // then we need to copy over the latest database
             L.i("database file: " + databaseFile.getAbsolutePath());
             try {

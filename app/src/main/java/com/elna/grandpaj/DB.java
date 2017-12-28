@@ -8,8 +8,13 @@ package com.elna.grandpaj;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.elna.grandpaj.entities.Category;
+
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -29,7 +34,6 @@ public class DB {
     public final static String CHAPTER_COLUMN          = "chapter_name";
     public final static String TEXT_COLUMN          = "text";
     public final static String ORDER_COLUMN      = "order";
-
     public final static String CATEGORY_NAME_COLUMN       = "category_name";
 
 
@@ -38,6 +42,7 @@ public class DB {
 
     private final SQLiteDatabase pbDatabase;
 
+    private List<Category> categoriesCached;
 
     private DB() {
         pbDatabase = SQLiteDatabase.openDatabase(databaseFile.toString(), null, SQLiteDatabase.OPEN_READONLY | SQLiteDatabase.NO_LOCALIZED_COLLATORS);
@@ -52,19 +57,46 @@ public class DB {
         return singleton;
     }
 
-    public Cursor getCategories() {
+
+
+    private List<Category> loadAllCategories() {
+        List<Category> result = new ArrayList<>();
         String[] cols = {ID_COLUMN, CATEGORY_NAME_COLUMN, TABLE_LINK_COLUMN, SECTION_LINK_COLUMN};
         String[] selectionArgs = {};
-        return pbDatabase.query(
-                true,
+        Cursor cursor = pbDatabase.query(
+                false,
                 CATEGORY_TABLE,
                 cols,
-                null,
+                "",
                 selectionArgs,
                 null,
                 null,
-                CATEGORY_NAME_COLUMN + " ASC",
+                ID_COLUMN + " ASC",
                 null);
+
+        
+        while (cursor.moveToNext()) {
+            Category category = createCategory(cursor);
+            result.add(category);
+        }
+
+        return result;
+    }
+
+    private Category createCategory(Cursor cursor) {
+        Integer id = cursor.getInt(cursor.getColumnIndex(DB.ID_COLUMN));
+        String tableLink = cursor.getString(cursor.getColumnIndex(DB.TABLE_LINK_COLUMN));
+        Integer sectionLink = cursor.getInt(cursor.getColumnIndex(DB.SECTION_LINK_COLUMN));
+        String name = cursor.getString(cursor.getColumnIndex(DB.CATEGORY_NAME_COLUMN));
+        return new Category(id, name, tableLink, sectionLink);
+    }
+
+
+    public List<Category> getCategories() {
+        if (categoriesCached == null) {
+            categoriesCached = loadAllCategories();
+        }
+        return  categoriesCached;
     }
 
     public int getPrayerCountForCategory(String category, String language) {

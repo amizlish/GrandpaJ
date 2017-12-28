@@ -137,7 +137,7 @@ public class CategoriesFragment extends Fragment implements CategoriesAdapter.On
 //        ft.addToBackStack(null);
 //        ft.commit();
 
-        Map<Integer, Category> categories = readAllCategories() ;
+        List<Category> categories = DB.get().getCategories();
         Category category = categories.get(categoryId);
         String tableLink = category.getTableLink();
         Intent intent = null;
@@ -149,22 +149,6 @@ public class CategoriesFragment extends Fragment implements CategoriesAdapter.On
         getActivity().overridePendingTransition(R.anim.enter, R.anim.exit);
     }
 
-    private  Map<Integer, Category>  readAllCategories() {
-        Map<Integer, Category> result = new HashMap<>();
-        Cursor cursor = DB.get().getCategories();
-        while (!cursor.isAfterLast()) {
-            Category category = createCategory(cursor);
-            result.put(category.getId(), category);
-        }
-        return result;
-    }
-
-    private Category createCategory(Cursor cursor) {
-        Integer id = cursor.getInt(cursor.getColumnIndex(DB.ID_COLUMN));
-        String tableLink = cursor.getString(cursor.getColumnIndex(DB.TABLE_LINK_COLUMN));
-        Integer sectionLink = cursor.getInt(cursor.getColumnIndex(DB.SECTION_LINK_COLUMN));
-        return new Category(id, tableLink, sectionLink);
-    }
 
     public void expandToolbar() {
         AppBarLayout appBarLayout = (AppBarLayout) getActivity().findViewById(R.id.appbar);

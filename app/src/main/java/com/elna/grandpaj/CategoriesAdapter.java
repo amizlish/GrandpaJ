@@ -6,13 +6,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.elna.grandpaj.entities.Category;
+
+import java.util.List;
+import java.util.Map;
+
 class CategoriesAdapter extends RecyclerView.Adapter<CategoryViewHolder> {
 
-    private final Cursor mCategoriesCursor;
+
+    private final List<Category> mCategories;
     private OnCategorySelectedListener mListener;
 
     CategoriesAdapter() {
-        mCategoriesCursor = DB.get().getCategories();
+        mCategories = DB.get().getCategories();
         setHasStableIds(false);
     }
 
@@ -36,16 +42,14 @@ class CategoriesAdapter extends RecyclerView.Adapter<CategoryViewHolder> {
 
     @Override
     public void onBindViewHolder(CategoryViewHolder holder, int position) {
-        mCategoriesCursor.moveToPosition(position);
-        int categoryColIdx = mCategoriesCursor.getColumnIndexOrThrow(DB.CATEGORY_NAME_COLUMN);
-        String category = mCategoriesCursor.getString(categoryColIdx);
+        String category = mCategories.get(position).getName();
         holder.category.setText(category);
 
     }
 
     @Override
     public int getItemCount() {
-        return mCategoriesCursor.getCount();
+        return mCategories.size();
     }
 
     void setListener(OnCategorySelectedListener l) {

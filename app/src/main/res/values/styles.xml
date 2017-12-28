@@ -3,9 +3,9 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/prayer_book_primary</item>
-        <item name="colorPrimaryDark">@color/prayer_book_primary_dark</item>
-        <item name="colorAccent">@color/prayer_book_accent</item>
+        <item name="colorPrimary">@color/grandpaj_primary</item>
+        <item name="colorPrimaryDark">@color/grandpaj_primary_dark</item>
+        <item name="colorAccent">@color/grandpaj_accent</item>
         <item name="windowActionModeOverlay">true</item>
         <item name="windowActionBarOverlay">true</item>
         <!--<item name="android:textColorHint">@color/text_hint</item>-->

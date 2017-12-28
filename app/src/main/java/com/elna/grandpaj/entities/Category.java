@@ -7,11 +7,13 @@ package com.elna.grandpaj.entities;
 public class Category {
 
     private Integer id;
+    private String name;
     private final String tableLink;
     private final Integer sectionLink;
 
-    public Category(Integer id, String tableLink, Integer sectionLink) {
+    public Category(Integer id, String name, String tableLink, Integer sectionLink) {
         this.id = id;
+        this.name = name;
         this.tableLink = tableLink;
         this.sectionLink = sectionLink;
     }
@@ -26,5 +28,9 @@ public class Category {
 
     public Integer getSectionLink() {
         return sectionLink;
+    }
+
+    public String getName() {
+        return name;
     }
 }
