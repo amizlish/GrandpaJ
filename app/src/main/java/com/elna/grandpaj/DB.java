@@ -23,7 +23,7 @@ import java.util.Map;
 @SuppressWarnings("WeakerAccess")
 public class DB {
 
-    private final static String BIOGRAPHY_TABLE    = "biography";
+    private final static String BIOGRAPHY_TABLE    = "bio_book";
     private final static String CATEGORY_TABLE    = "category";
 
     public static final String BIO_BOOK_TABLE = "bio_book";
@@ -31,9 +31,9 @@ public class DB {
     public static final String TABLE_LINK_COLUMN = "table_link";
     public static final String SECTION_LINK_COLUMN = "section_id";
     public final static String ID_COLUMN                = "id";
-    public final static String CHAPTER_COLUMN          = "chapter_name";
+    public final static String CHAPTER_NAME_COLUMN          = "chapter_name";
     public final static String TEXT_COLUMN          = "text";
-    public final static String ORDER_COLUMN      = "order";
+    public final static String CHAPTER_ID_COLUMN      = "chapter_id";
     public final static String CATEGORY_NAME_COLUMN       = "category_name";
 
 
@@ -99,33 +99,33 @@ public class DB {
         return  categoriesCached;
     }
 
-    public int getPrayerCountForCategory(String category, String language) {
-        // check the cache first
-//        if (prayerCountCache.containsKey(language + category)) {
-//            return prayerCountCache.get(language + category);
+//    public int getPrayerCountForCategory(String category, String language) {
+//        // check the cache first
+////        if (prayerCountCache.containsKey(language + category)) {
+////            return prayerCountCache.get(language + category);
+////        }
+//
+//        String[] selectionArgs = {category, language};
+//        Cursor cursor = pbDatabase.rawQuery(
+//                "SELECT COUNT(id) FROM prayers WHERE category=? and language=?",
+//                selectionArgs);
+//
+//        if (cursor.getCount() > 0) {
+//            cursor.moveToFirst();
+//            int count = cursor.getInt(0);
+//            cursor.close();
+////            prayerCountCache.put(language+category, count);
+//            return count;
 //        }
+//
+//        // should never happen
+//        return 0;
+//    }
 
-        String[] selectionArgs = {category, language};
-        Cursor cursor = pbDatabase.rawQuery(
-                "SELECT COUNT(id) FROM prayers WHERE category=? and language=?",
-                selectionArgs);
-
-        if (cursor.getCount() > 0) {
-            cursor.moveToFirst();
-            int count = cursor.getInt(0);
-            cursor.close();
-//            prayerCountCache.put(language+category, count);
-            return count;
-        }
-
-        // should never happen
-        return 0;
-    }
-
-    public Cursor getChapter(long chapterId) {
-        String[] cols = {TEXT_COLUMN};
-        String selectionClause = ID_COLUMN + "=?";
-        String[] selectionArgs = {Long.valueOf(chapterId).toString()};
+    public Cursor getFirstChapter(long sectionId) {
+        String[] cols = {TEXT_COLUMN, CHAPTER_NAME_COLUMN};
+        String selectionClause = SECTION_LINK_COLUMN + "=? and "+  CHAPTER_ID_COLUMN + " =1";
+        String[] selectionArgs = {Long.valueOf(sectionId).toString()};
 
         return pbDatabase.query(BIOGRAPHY_TABLE, cols, selectionClause, selectionArgs, null, null, null);
     }
@@ -177,7 +177,7 @@ public class DB {
 //        return pbDatabase.query(PRAYERS_TABLE, cols, whereClause.toString(), null, null, null, LANGUAGE_COLUMN);
 //    }
 //
-//    public Cursor getChapter(long chapterId) {
+//    public Cursor getFirstChapter(long chapterId) {
 //        String[] cols = {PRAYERTEXT_COLUMN, AUTHOR_COLUMN, CITATION_COLUMN, SEARCHTEXT_COLUMN, LANGUAGE_COLUMN};
 //        String selectionClause = ID_COLUMN + "=?";
 //        String[] selectionArgs = {Long.valueOf(chapterId).toString()};

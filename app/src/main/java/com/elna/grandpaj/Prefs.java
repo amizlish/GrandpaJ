@@ -8,9 +8,6 @@ import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import java.util.LinkedList;
-import java.util.Locale;
-
 /**
  *
  * @author arash
@@ -22,7 +19,7 @@ public class Prefs {
 
     private static final String PREFERENCES_FILE_NAME = "PrayerBookPreferences";
     private static final String PREFERENCE_DATABASE_VERSION = "DatabaseVersion";
-    private static final String PREFERENCE_PRAYER_TEXT_SCALAR = "PrayerTextScalar";
+    private static final String PREFERENCE_BOOK_TEXT_SCALAR = "PrayerTextScalar";
     private static final String PREFERENCE_USE_CLASSIC_THEME = "UseClassicTheme";
 
     private Prefs(Context ctx) {
@@ -51,12 +48,12 @@ public class Prefs {
     }
 
 
-    public float getPrayerTextScalar() {
-        return mPrefs.getFloat(PREFERENCE_PRAYER_TEXT_SCALAR, 1.0f);
+    public float getBookTextScalar() {
+        return mPrefs.getFloat(PREFERENCE_BOOK_TEXT_SCALAR, 1.0f);
     }
 
     public void setPrayerTextScalar(float scalar) {
-        mPrefs.edit().putFloat(PREFERENCE_PRAYER_TEXT_SCALAR, scalar).apply();
+        mPrefs.edit().putFloat(PREFERENCE_BOOK_TEXT_SCALAR, scalar).apply();
     }
 
     public boolean useClassicTheme() {

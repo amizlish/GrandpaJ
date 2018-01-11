@@ -3,11 +3,11 @@
     <head>
 
         <meta charset="utf-8">
-        <title>Prayer</title>
+        <title>{{chapter_name}}</title>
 
         <style type="text/css">
 
-        #prayer p {
+        #chapter p {
             margin: 0 0px .75em 0px;
             color: #333333;
             font: normal {{fontWidth}}em/{{fontHeight}}em {{font}};
@@ -15,7 +15,7 @@
             text-indent: 1em;
         }
 
-        #prayer p.opening {
+        #chapter p.opening {
             text-indent: 0;
         }
 
@@ -24,7 +24,7 @@
             background: {{backgroundColor}};
         }
 
-        #prayer p.commentcaps {
+        #chapter p.commentcaps {
             font: normal {{commentSize}}em sans-serif;
             color: #444433;
             text-transform: uppercase;
@@ -32,26 +32,26 @@
             text-indent: 0;
         }
 
-        #prayer p.comment {
+        #chapter p.comment {
             font: normal {{commentSize}}em sans-serif;
             color: #444433;
             margin: 0 0px .825em 1.5em;
             text-indent: 0;
         }
 
-        #prayer p.noindent {
+        #chapter p.noindent {
             text-indent: 0;
             margin-bottom: .25em;
         }
 
-        #prayer p.commentnoindent {
+        #chapter p.commentnoindent {
             font: normal {{commentSize}}em sans-serif;
             color: #444433;
             margin: 0 0px 15px 5px;
             text-indent: 0;
         }
 
-        #prayer h4#author {
+        #chapter h4#author {
             float: right;
             margin: 0 4px 4px 0;
             font: {{italicOrNothing}} {{authorWidth}}em/{{authorHeight}}em {{font}};
@@ -62,7 +62,7 @@
         }
 
         span.versal {
-            float: left;
+            float: right;
             display: inline;
             position: relative;
             color: {{versalAndAuthorColor}};
@@ -77,13 +77,8 @@
 
     <body>
 
-        <div id="prayer">
-        {{prayer}}
-
-        <h4 id="author">{{author}}</h4>
-
-        {{citation}}
-
+        <div id="chapter">
+        {{chapter_text}}
         </div>
 
     </body>

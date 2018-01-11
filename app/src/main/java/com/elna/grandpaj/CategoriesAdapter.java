@@ -26,6 +26,7 @@ class CategoriesAdapter extends RecyclerView.Adapter<CategoryViewHolder> {
     public CategoryViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.category, parent, false);
         final CategoryViewHolder holder = new CategoryViewHolder(itemView);
+
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -33,7 +34,8 @@ class CategoriesAdapter extends RecyclerView.Adapter<CategoryViewHolder> {
                     return;
                 }
 
-                mListener.onCategorySelected(holder.itemView.getId());
+
+                mListener.onCategorySelected(holder.getLayoutPosition());
             }
         });
 

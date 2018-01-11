@@ -11,7 +11,7 @@ import android.util.Log;
  * @author arash
  */
 public class L {
-    private static final String TAG = "PrayerBook";
+    private static final String TAG = "BioBook";
     
     public static void i(String msg) {
         Log.i(TAG, msg);

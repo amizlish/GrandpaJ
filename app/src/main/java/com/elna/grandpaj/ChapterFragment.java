@@ -2,7 +2,6 @@ package com.elna.grandpaj;
 
 import android.annotation.TargetApi;
 import android.content.Context;
-import android.content.Intent;
 import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
@@ -37,12 +36,12 @@ public class ChapterFragment extends Fragment {
     private Cursor chapterCursor;
     private float mScale = 1.0f;
 
-    private static final String CHPATER_ID_ARGUMENT = "id";
+    private static final String SECTION_ID_ARGUMENT = "section_id";
 
-    public static ChapterFragment newInstance(long prayerId) {
+    public static ChapterFragment newInstance(long sectionId) {
         ChapterFragment fragment = new ChapterFragment();
         Bundle args = new Bundle();
-        args.putLong(CHPATER_ID_ARGUMENT, prayerId);
+        args.putLong(SECTION_ID_ARGUMENT, sectionId);
         fragment.setArguments(args);
         return fragment;
     }
@@ -52,13 +51,13 @@ public class ChapterFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         Bundle arguments = getArguments();
-        long chapterId = arguments.getLong(CHPATER_ID_ARGUMENT, -1);
-        if (chapterId == -1) {
+        long sectionId = arguments.getLong(SECTION_ID_ARGUMENT, -1);
+        if (sectionId == -1) {
             throw new IllegalArgumentException("You must provide a prayer id to this fragment");
         }
-        chapterCursor = DB.get().getChapter(chapterId);
+        chapterCursor = DB.get().getFirstChapter(sectionId);
         chapterCursor.moveToFirst();
-        mScale = Prefs.get(App.getApp()).getPrayerTextScalar();
+        mScale = Prefs.get(App.getApp()).getBookTextScalar();
 
         setHasOptionsMenu(true);
     }
@@ -73,13 +72,13 @@ public class ChapterFragment extends Fragment {
         mWebView.getSettings().setSupportZoom(true);
         mWebView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         mWebView.setKeepScreenOn(true);
-        reloadPrayer();
+        reloadChapter();
 
         return mWebView;
     }
 
-    private void reloadPrayer() {
-        mWebView.loadDataWithBaseURL(null, getPrayerHTML(), "text/html", "UTF-8", null);
+    private void reloadChapter() {
+        mWebView.loadDataWithBaseURL(null, getChapterHTML(), "text/html", "UTF-8", null);
     }
 
     @Override
@@ -106,21 +105,21 @@ public class ChapterFragment extends Fragment {
                 if (mScale < 1.6f) {
                     mScale += 0.05f;
                     Prefs.get(App.getApp()).setPrayerTextScalar(mScale);
-                    reloadPrayer();
+                    reloadChapter();
                 }
                 break;
             case R.id.action_decrease_text_size:
                 if (mScale > .75) {
                     mScale -= 0.05f;
                     com.elna.grandpaj.Prefs.get(App.getApp()).setPrayerTextScalar(mScale);
-                    reloadPrayer();
+                    reloadChapter();
                 }
                 break;
 //            case R.id.action_classic_theme:
 //                boolean useClassic = !item.isChecked(); // toggle the value
 //                item.setChecked(useClassic);
 //                com.elna.grandpaj.Prefs.get(App.getApp()).setUseClassicTheme(useClassic);
-//                reloadPrayer();
+//                reloadChapter();
 //                break;
 //            case R.id.action_share_prayer:
 //                Intent sharingIntent = new Intent(Intent.ACTION_SEND);
@@ -150,7 +149,7 @@ public class ChapterFragment extends Fragment {
         }
     }
 
-    public String getPrayerHTML() {
+    public String getChapterHTML() {
         float pFontWidth = 1.1f * mScale;
         float pFontHeight = 1.575f * mScale;
         float pComment = 0.8f * mScale;
@@ -189,22 +188,21 @@ public class ChapterFragment extends Fragment {
         args.put("italicOrNothing", italicOrNothing);
 
         int textIndex = chapterCursor.getColumnIndexOrThrow(DB.TEXT_COLUMN);
-        String prayerText = chapterCursor.getString(textIndex);
-        args.put("prayer", prayerText);
+        String text = chapterCursor.getString(textIndex);
+        String chapterName = chapterCursor.getString(chapterCursor.getColumnIndexOrThrow(DB.CHAPTER_NAME_COLUMN));
+        args.put("chapter_name", chapterName);
+        args.put("chapter_text", text);
 
         args.put("layoutDirection", "rtl");
 
-        InputStream is = getResources().openRawResource(R.raw.prayer_template);
+        InputStream is = getResources().openRawResource(R.raw.text_template);
         InputStreamReader isr = new InputStreamReader(is);
 
-        return Mustache.compiler().escapeHTML(false).compile(isr).execute(args);
+        String result = Mustache.compiler().escapeHTML(false).compile(isr).execute(args);
+
+        return result;
     }
 
-//    private String getPrayerText() {
-//        int searchTextIndex = chapterCursor.getColumnIndexOrThrow(DB.SEARCHTEXT_COLUMN);
-//
-//        return chapterCursor.getString(searchTextIndex);
-//    }
 
     @TargetApi(19) @SuppressWarnings("deprecation")
     private void printPrayer() {

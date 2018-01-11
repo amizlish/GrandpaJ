@@ -45,14 +45,14 @@ public class BiographyActivity extends AppCompatActivity {
         if (state == null) {
             Bundle extras = getIntent().getExtras();
             if (extras == null) {
-                throw new IllegalArgumentException("You need to provide an 'extra' with the prayer id");
+                throw new IllegalArgumentException("You need to provide an 'extra' with the section id");
             }
-            long prayerId = extras.getLong(ARG_SECTION_ID, 0);
-            if (prayerId == 0) {
-                throw new IllegalArgumentException("You need to provide an 'extra' with the prayer id");
+            long sectionId = extras.getInt(ARG_SECTION_ID, 0);
+            if (sectionId == 0) {
+                throw new IllegalArgumentException("You need to provide an 'extra' with the section id");
             }
 
-            ChapterFragment fragment = ChapterFragment.newInstance(prayerId);
+            ChapterFragment fragment = ChapterFragment.newInstance(sectionId);
 
             FragmentManager fm = getSupportFragmentManager();
             FragmentTransaction ft = fm.beginTransaction();
