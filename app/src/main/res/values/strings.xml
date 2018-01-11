@@ -3,30 +3,17 @@
 <resources
     xmlns:tools="http://schemas.android.com/tools"
     tools:ignore="MissingTranslation">
-    <string name="app_name">Prayer Book</string>
-    <string name="prayers">Prayers</string>
-    <string name="about">About</string>
+    <string name="app_name">GrandpaJ</string>
+    <string name="stories">סיפורים</string>
+    <string name="about">אודות</string>
     <string name="search">Search</string>
     <string name="search_ellipsis">Search…</string>
-    <string name="languages">Languages</string>
-    <string name="share">Share</string>
-    <string name="english" translatable="false">English</string>
-    <string name="spanish" translatable="false">Español</string>
-    <string name="persian" translatable="false">فارسی</string>
-    <string name="french" translatable="false">Français</string>
-    <string name="dutch" translatable="false">Nederlands</string>
     <string name="favorites">Favorites</string>
-    <string name="slovak" translatable="false">Slovenčina</string>
-    <string name="czech" translatable="false">Čeština</string>
-    <string name="fijian" translatable="false">Vakaviti</string>
-    <string name="icelandic" translatable="false">íslenska</string>
-    <string name="german" translatable="false">Deutsch</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
-    <string name="print_ellipsis">Print…</string>
     <string name="document">Document</string>
     <string name="classic_theme">Classic theme</string>
-    <string name="search_prayers">Search prayers</string>
+    <string name="search_prayers">Search</string>
 
     <plurals name="number_of_words">
         <item quantity="one">%d word</item>
