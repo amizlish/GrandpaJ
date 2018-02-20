@@ -14,7 +14,8 @@
     <string name="document">Document</string>
     <string name="classic_theme">Classic theme</string>
     <string name="search_prayers">Search</string>
-
+    <string name="drawer_open">Open navigation drawer</string>
+    <string name="drawer_close">Close navigation drawer</string>
     <plurals name="number_of_words">
         <item quantity="one">%d word</item>
         <item quantity="other">%d words</item>

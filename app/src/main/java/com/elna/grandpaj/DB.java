@@ -9,6 +9,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.elna.grandpaj.entities.Category;
+import com.elna.grandpaj.entities.Chapter;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -99,35 +100,35 @@ public class DB {
         return  categoriesCached;
     }
 
-//    public int getPrayerCountForCategory(String category, String language) {
-//        // check the cache first
-////        if (prayerCountCache.containsKey(language + category)) {
-////            return prayerCountCache.get(language + category);
-////        }
-//
-//        String[] selectionArgs = {category, language};
-//        Cursor cursor = pbDatabase.rawQuery(
-//                "SELECT COUNT(id) FROM prayers WHERE category=? and language=?",
-//                selectionArgs);
-//
-//        if (cursor.getCount() > 0) {
-//            cursor.moveToFirst();
-//            int count = cursor.getInt(0);
-//            cursor.close();
-////            prayerCountCache.put(language+category, count);
-//            return count;
-//        }
-//
-//        // should never happen
-//        return 0;
-//    }
-
-    public Cursor getFirstChapter(long sectionId) {
+    public Cursor getChapter(Long sectionId, Long chapterId) {
         String[] cols = {TEXT_COLUMN, CHAPTER_NAME_COLUMN};
-        String selectionClause = SECTION_LINK_COLUMN + "=? and "+  CHAPTER_ID_COLUMN + " =1";
-        String[] selectionArgs = {Long.valueOf(sectionId).toString()};
+        String selectionClause = SECTION_LINK_COLUMN + "=? and "+  CHAPTER_ID_COLUMN + " =?";
+        String[] selectionArgs = {sectionId.toString(), chapterId.toString()};
 
         return pbDatabase.query(BIOGRAPHY_TABLE, cols, selectionClause, selectionArgs, null, null, null);
+    }
+
+
+    public List<Chapter> getAllChaptersInSection(Long sectionId) {
+        List<Chapter> result = new ArrayList<>();
+
+        String[] cols = {CHAPTER_NAME_COLUMN,SECTION_LINK_COLUMN};
+        String selectionClause = SECTION_LINK_COLUMN + "=? ";
+        String[] selectionArgs = {sectionId.toString()};
+
+        Cursor cursor = pbDatabase.query(BIOGRAPHY_TABLE, cols, selectionClause, selectionArgs, null, null, ID_COLUMN + " ASC");
+        while (cursor.moveToNext()) {
+            Chapter chapter = createChapter(cursor);
+            result.add(chapter);
+        }
+
+        return result;
+    }
+
+    private Chapter createChapter(Cursor cursor) {
+        Integer sectionLink = cursor.getInt(cursor.getColumnIndex(DB.SECTION_LINK_COLUMN));
+        String name = cursor.getString(cursor.getColumnIndex(DB.CHAPTER_NAME_COLUMN));
+        return new Chapter(sectionLink, name);
     }
 
 //    public Cursor getPrayers(String category) {
@@ -184,4 +185,29 @@ public class DB {
 //
 //        return pbDatabase.query(PRAYERS_TABLE, cols, selectionClause, selectionArgs, null, null, null);
 //    }
+
+
+//    public int getPrayerCountForCategory(String category, String language) {
+//        // check the cache first
+////        if (prayerCountCache.containsKey(language + category)) {
+////            return prayerCountCache.get(language + category);
+////        }
+//
+//        String[] selectionArgs = {category, language};
+//        Cursor cursor = pbDatabase.rawQuery(
+//                "SELECT COUNT(id) FROM prayers WHERE category=? and language=?",
+//                selectionArgs);
+//
+//        if (cursor.getCount() > 0) {
+//            cursor.moveToFirst();
+//            int count = cursor.getInt(0);
+//            cursor.close();
+////            prayerCountCache.put(language+category, count);
+//            return count;
+//        }
+//
+//        // should never happen
+//        return 0;
+//    }
+
 }

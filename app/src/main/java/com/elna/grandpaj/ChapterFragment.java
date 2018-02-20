@@ -18,12 +18,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
+import android.widget.Toast;
 
+import com.elna.grandpaj.entities.Chapter;
 import com.samskivert.mustache.Mustache;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -37,12 +40,20 @@ public class ChapterFragment extends Fragment {
     private float mScale = 1.0f;
 
     private static final String SECTION_ID_ARGUMENT = "section_id";
+    private static final String CHAPTER_ID_ARGUMENT = "chapter_id";
+    private long sectionId;
+    private Long chapterId;
+    private List<Chapter> chapterList;
 
-    public static ChapterFragment newInstance(long sectionId) {
+    public static ChapterFragment newInstance(long sectionId, long chapterId) {
         ChapterFragment fragment = new ChapterFragment();
         Bundle args = new Bundle();
         args.putLong(SECTION_ID_ARGUMENT, sectionId);
+        args.putLong(CHAPTER_ID_ARGUMENT, chapterId);
+
         fragment.setArguments(args);
+
+
         return fragment;
     }
 
@@ -51,15 +62,22 @@ public class ChapterFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         Bundle arguments = getArguments();
-        long sectionId = arguments.getLong(SECTION_ID_ARGUMENT, -1);
-        if (sectionId == -1) {
-            throw new IllegalArgumentException("You must provide a prayer id to this fragment");
-        }
-        chapterCursor = DB.get().getFirstChapter(sectionId);
+        sectionId = getBundledArgumentId(arguments, SECTION_ID_ARGUMENT);
+        chapterId = getBundledArgumentId(arguments, CHAPTER_ID_ARGUMENT);
+        chapterList = DB.get().getAllChaptersInSection(sectionId);
+        chapterCursor = DB.get().getChapter(sectionId, chapterId);
         chapterCursor.moveToFirst();
         mScale = Prefs.get(App.getApp()).getBookTextScalar();
 
         setHasOptionsMenu(true);
+    }
+
+    private long getBundledArgumentId(Bundle arguments, String argName) {
+        long result = arguments.getLong(argName, -1);
+        if (result == -1) {
+            throw new IllegalArgumentException("You must provide a " + argName + "  to this fragment");
+        }
+        return result;
     }
 
     @Override
@@ -72,6 +90,19 @@ public class ChapterFragment extends Fragment {
         mWebView.getSettings().setSupportZoom(true);
         mWebView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         mWebView.setKeepScreenOn(true);
+
+        mWebView.setOnTouchListener(new OnSwipeTouchListener((BiographyActivity) this.getActivity()) {
+
+            public void onSwipeRight() {
+                getBiographyActivity().selectChapterInDrawer(chapterId.intValue()+1, sectionId, chapterList);
+
+            }
+            public void onSwipeLeft() {
+                getBiographyActivity().selectChapterInDrawer(chapterId.intValue()-1, sectionId, chapterList);
+            }
+
+
+        });
         reloadChapter();
 
         return mWebView;
@@ -204,22 +235,4 @@ public class ChapterFragment extends Fragment {
     }
 
 
-    @TargetApi(19) @SuppressWarnings("deprecation")
-    private void printPrayer() {
-        if (mWebView == null) {
-            // shouldn't happen, but just in case
-            return;
-        }
-
-        PrintManager manager = (PrintManager)getActivity().getSystemService(Context.PRINT_SERVICE);
-        PrintDocumentAdapter adapter;
-        if (Build.VERSION.SDK_INT >= 21) {
-            adapter = mWebView.createPrintDocumentAdapter("Prayer");
-        } else {
-            adapter = mWebView.createPrintDocumentAdapter();
-        }
-
-        String jobName = getString(R.string.app_name) + " " + getString(R.string.document);
-        manager.print(jobName, adapter, new PrintAttributes.Builder().build());
-    }
 }
