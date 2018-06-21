@@ -146,21 +146,7 @@ public class ChapterFragment extends Fragment {
                     reloadChapter();
                 }
                 break;
-//            case R.id.action_classic_theme:
-//                boolean useClassic = !item.isChecked(); // toggle the value
-//                item.setChecked(useClassic);
-//                com.elna.grandpaj.Prefs.get(App.getApp()).setUseClassicTheme(useClassic);
-//                reloadChapter();
-//                break;
-//            case R.id.action_share_prayer:
-//                Intent sharingIntent = new Intent(Intent.ACTION_SEND);
-//                sharingIntent.setType("text/plain");
-//                sharingIntent.putExtra(Intent.EXTRA_TEXT, getPrayerText());
-//                startActivity(Intent.createChooser(sharingIntent, "Share via"));
-//                break;
-//            case R.id.action_print_prayer:
-//                printPrayer();
-//                break;
+
             default:
                 return false;
         }

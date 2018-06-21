@@ -1,32 +1,24 @@
 package com.elna.grandpaj;
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 
-
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.elna.grandpaj.entities.BioPicture;
 import com.elna.grandpaj.entities.Category;
 import com.elna.grandpaj.entities.Chapter;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-/**
- *
- * @author arash
- */
-@SuppressWarnings("WeakerAccess")
+
 public class DB {
 
     private final static String BIOGRAPHY_TABLE    = "bio_book";
     private final static String CATEGORY_TABLE    = "category";
-
+    public static final String BIO_PICS_TABLE = "bio_pics";
+    public static final String BIO_LOCATIONS_TABLE = "bio_locations";
     public static final String BIO_BOOK_TABLE = "bio_book";
 
     public static final String TABLE_LINK_COLUMN = "table_link";
@@ -37,17 +29,26 @@ public class DB {
     public final static String CHAPTER_ID_COLUMN      = "chapter_id";
     public final static String CATEGORY_NAME_COLUMN       = "category_name";
 
+    public final static String PIC_ID      = "pic_id";
+    public final static String PIC_TITLE      = "title";
+    public final static String PIC_IMAGE_BLOB      = "image";
+
+
+
 
     private static DB singleton = null;
     public static File databaseFile;
 
-    private final SQLiteDatabase pbDatabase;
+    private SQLiteDatabase liteDatabase;
 
     private List<Category> categoriesCached;
 
-    private DB() {
-        pbDatabase = SQLiteDatabase.openDatabase(databaseFile.toString(), null, SQLiteDatabase.OPEN_READONLY | SQLiteDatabase.NO_LOCALIZED_COLLATORS);
+    public DB() {
+        liteDatabase = openDB();
+    }
 
+    private SQLiteDatabase openDB() {
+        return SQLiteDatabase.openDatabase(databaseFile.toString(), null, SQLiteDatabase.OPEN_READWRITE | SQLiteDatabase.NO_LOCALIZED_COLLATORS);
     }
 
     public synchronized static DB get() {
@@ -61,10 +62,13 @@ public class DB {
 
 
     private List<Category> loadAllCategories() {
+        if (!liteDatabase.isOpen())
+            liteDatabase = openDB();
         List<Category> result = new ArrayList<>();
         String[] cols = {ID_COLUMN, CATEGORY_NAME_COLUMN, TABLE_LINK_COLUMN, SECTION_LINK_COLUMN};
         String[] selectionArgs = {};
-        Cursor cursor = pbDatabase.query(
+
+        Cursor cursor = liteDatabase.query(
                 false,
                 CATEGORY_TABLE,
                 cols,
@@ -81,6 +85,7 @@ public class DB {
             result.add(category);
         }
 
+        liteDatabase.close();
         return result;
     }
 
@@ -104,8 +109,10 @@ public class DB {
         String[] cols = {TEXT_COLUMN, CHAPTER_NAME_COLUMN};
         String selectionClause = SECTION_LINK_COLUMN + "=? and "+  CHAPTER_ID_COLUMN + " =?";
         String[] selectionArgs = {sectionId.toString(), chapterId.toString()};
+        if (!liteDatabase.isOpen())
+            liteDatabase = openDB();
+        return liteDatabase.query(BIOGRAPHY_TABLE, cols, selectionClause, selectionArgs, null, null, null);
 
-        return pbDatabase.query(BIOGRAPHY_TABLE, cols, selectionClause, selectionArgs, null, null, null);
     }
 
 
@@ -116,12 +123,15 @@ public class DB {
         String selectionClause = SECTION_LINK_COLUMN + "=? ";
         String[] selectionArgs = {sectionId.toString()};
 
-        Cursor cursor = pbDatabase.query(BIOGRAPHY_TABLE, cols, selectionClause, selectionArgs, null, null, ID_COLUMN + " ASC");
+        if (!liteDatabase.isOpen())
+            liteDatabase = openDB();
+        Cursor cursor = liteDatabase.query(BIOGRAPHY_TABLE, cols, selectionClause, selectionArgs, null, null, ID_COLUMN + " ASC");
         while (cursor.moveToNext()) {
             Chapter chapter = createChapter(cursor);
             result.add(chapter);
         }
 
+        liteDatabase.close();
         return result;
     }
 
@@ -131,83 +141,64 @@ public class DB {
         return new Chapter(sectionLink, name);
     }
 
-//    public Cursor getPrayers(String category) {
-//        String[] cols = {ID_COLUMN,
-//                            OPENINGWORDS_COLUMN,
-//                            CATEGORY_COLUMN,
-//                            AUTHOR_COLUMN,
-//                            LANGUAGE_COLUMN,
-//                            WORDCOUNT_COLUMN};
-//        String selectionClause = "category=? AND language=?";
-//        String[] selectionArgs = {category};
-//        return pbDatabase.query(
-//                true,
-//                PRAYERS_TABLE,
-//                cols,
-//                selectionClause,
-//                selectionArgs,
-//                null,
-//                null,
-//                OPENINGWORDS_COLUMN + " ASC",
-//                null);
-//    }
-//
-//    public Cursor getPrayersWithKeywords(String []keywords) {
-//        String []cols = {ID_COLUMN, OPENINGWORDS_COLUMN, CATEGORY_COLUMN, AUTHOR_COLUMN, WORDCOUNT_COLUMN };
-//        StringBuilder whereClause = new StringBuilder();
-//        boolean firstKeyword = true;
-//        for (String kw : keywords) {
-//            if (kw.isEmpty()) {
-//                continue;
-//            }
-//            if (!firstKeyword) {
-//                whereClause.append(" AND");
-//            } else {
-//                firstKeyword = false;
-//            }
-//
-//            whereClause.append(" searchText LIKE '%");
-//            whereClause.append(kw);
-//            whereClause.append("%'");
-//        }
-//
-//        // build the language portion of the query
-//        StringBuilder languageClause = new StringBuilder();
-//
-//
-//        return pbDatabase.query(PRAYERS_TABLE, cols, whereClause.toString(), null, null, null, LANGUAGE_COLUMN);
-//    }
-//
-//    public Cursor getFirstChapter(long chapterId) {
-//        String[] cols = {PRAYERTEXT_COLUMN, AUTHOR_COLUMN, CITATION_COLUMN, SEARCHTEXT_COLUMN, LANGUAGE_COLUMN};
-//        String selectionClause = ID_COLUMN + "=?";
-//        String[] selectionArgs = {Long.valueOf(chapterId).toString()};
-//
-//        return pbDatabase.query(PRAYERS_TABLE, cols, selectionClause, selectionArgs, null, null, null);
-//    }
+
+    // Getting single contact
+    BioPicture getContact(int id) {
+        if (!liteDatabase.isOpen())
+            liteDatabase = openDB();
+        Cursor cursor = liteDatabase.query(BIO_PICS_TABLE,
+                new String[] { PIC_ID, PIC_TITLE, PIC_IMAGE_BLOB }, PIC_ID + "=?",
+                new String[] { String.valueOf(id) }, null, null, null, null);
+        if (cursor != null)
+            cursor.moveToFirst();
+
+        BioPicture contact = new BioPicture(Integer.parseInt(cursor.getString(0)),
+                cursor.getString(1), cursor.getBlob(1));
+        liteDatabase.close();
+        // return contact
+        return contact;
+
+    }
+
+    // Getting All Contacts
+    public List<BioPicture> getAllPictures() {
+        List<BioPicture> picList = new ArrayList<>();
+        // Select All Query
+        String selectQuery = "SELECT  * FROM bio_pics ORDER BY pic_id DESC";
+        if (!liteDatabase.isOpen())
+            liteDatabase = openDB();
+
+        Cursor cursor = liteDatabase.rawQuery(selectQuery, null);
+        // looping through all rows and adding to list
+        if (cursor.moveToFirst()) {
+            do {
+                BioPicture bioPicture = new BioPicture();
+                bioPicture.setID(cursor.getInt(0));
+                bioPicture.setTitle(cursor.getString(1));
+                bioPicture.setImage(cursor.getBlob(2));
+                // Adding contact to list
+                picList.add(bioPicture);
+            } while (cursor.moveToNext());
+        }
+        // close inserting data from database
+        liteDatabase.close();
+        // return contact list
+        return picList;
+
+    }
 
 
-//    public int getPrayerCountForCategory(String category, String language) {
-//        // check the cache first
-////        if (prayerCountCache.containsKey(language + category)) {
-////            return prayerCountCache.get(language + category);
-////        }
-//
-//        String[] selectionArgs = {category, language};
-//        Cursor cursor = pbDatabase.rawQuery(
-//                "SELECT COUNT(id) FROM prayers WHERE category=? and language=?",
-//                selectionArgs);
-//
-//        if (cursor.getCount() > 0) {
-//            cursor.moveToFirst();
-//            int count = cursor.getInt(0);
-//            cursor.close();
-////            prayerCountCache.put(language+category, count);
-//            return count;
-//        }
-//
-//        // should never happen
-//        return 0;
-//    }
+    public void insertChapter(int chapterNumber, String formattedChapter) {
+        if (!liteDatabase.isOpen())
+            liteDatabase = openDB();
 
+        ContentValues values = new ContentValues();
+        values.put(TEXT_COLUMN, formattedChapter);
+        values.put(SECTION_LINK_COLUMN, 12);
+        values.put(CHAPTER_ID_COLUMN, chapterNumber);
+
+        liteDatabase.insert(BIOGRAPHY_TABLE, null, values);
+        liteDatabase.close();
+
+    }
 }

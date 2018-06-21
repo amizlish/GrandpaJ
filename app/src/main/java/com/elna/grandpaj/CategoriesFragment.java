@@ -1,13 +1,11 @@
 package com.elna.grandpaj;
 
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -20,12 +18,8 @@ import android.view.ViewGroup;
 
 import com.elna.grandpaj.entities.Category;
 import com.elna.util.DividerItemDecoration;
-import com.squareup.otto.Subscribe;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  *
@@ -143,7 +137,12 @@ public class CategoriesFragment extends Fragment implements CategoriesAdapter.On
         Intent intent = null;
         if (tableLink.equals(DB.BIO_BOOK_TABLE)) {
             intent = BiographyActivity.newIntent(getContext(), category);
+        } else if (tableLink.equals(DB.BIO_PICS_TABLE)) {
+            intent = BioPictureActivity.newIntent(getContext(), category);
         }
+//        else if (tableLink.equals(DB.BIO_LOCATIONS_TABLE)) {
+//            intent = MapsActivity.newIntent(getContext(), category);
+//        }
         startActivity(intent);
 
         getActivity().overridePendingTransition(R.anim.enter, R.anim.exit);
