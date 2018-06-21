@@ -51,7 +51,6 @@ public class App extends Application {
         int dbVersion = Prefs.get(this).getDatabaseVersion();
         File databaseFile = new File(getFilesDir(), "pjdb.db");
         DB.databaseFile = databaseFile;
-        readStoryFile();
         if (dbVersion != LatestDatabaseVersion || 1 == 1) {
             // then we need to copy over the latest database
             L.i("database file: " + databaseFile.getAbsolutePath());
@@ -73,19 +72,6 @@ public class App extends Application {
         }
     }
 
-
-    @SuppressLint("NewApi")
-    private void readStoryFile() {
-        BioBookConverter bioBookConverter = new BioBookConverter();
-        try {
-            InputStream stream = getAssets().open("grandpaJ_stories.txt");
-            bioBookConverter.run(stream);
-        } catch (IOException e) {
-
-            e.printStackTrace();
-        }
-
-    }
 
     public static void postOnBus(final Object event) {
         if (Looper.myLooper() == Looper.getMainLooper()) {
