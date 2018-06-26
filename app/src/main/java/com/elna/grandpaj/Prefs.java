@@ -52,7 +52,7 @@ public class Prefs {
         return mPrefs.getFloat(PREFERENCE_BOOK_TEXT_SCALAR, 1.0f);
     }
 
-    public void setPrayerTextScalar(float scalar) {
+    public void setBookTextScalar(float scalar) {
         mPrefs.edit().putFloat(PREFERENCE_BOOK_TEXT_SCALAR, scalar).apply();
     }
 

@@ -173,14 +173,14 @@ public class ChapterFragment extends Fragment {
             case R.id.action_increase_text_size:
                 if (mScale < 1.6f) {
                     mScale += 0.05f;
-                    Prefs.get(App.getApp()).setPrayerTextScalar(mScale);
+                    Prefs.get(App.getApp()).setBookTextScalar(mScale);
                     reloadChapter();
                 }
                 break;
             case R.id.action_decrease_text_size:
                 if (mScale > .75) {
                     mScale -= 0.05f;
-                    com.elna.grandpaj.Prefs.get(App.getApp()).setPrayerTextScalar(mScale);
+                    com.elna.grandpaj.Prefs.get(App.getApp()).setBookTextScalar(mScale);
                     reloadChapter();
                 }
                 break;
