@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="grandpaj_primary">#00BCD4</color>
+    <color name="grandpaj_primary">#00bcd4</color>
     <color name="grandpaj_primary_alpha33">#00BCD4EA</color>
     <color name="grandpaj_primary_dark">#0097A7</color>
     <color name="grandpaj_accent">#FFEB3B</color>

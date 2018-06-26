@@ -17,9 +17,9 @@ public class Prefs {
     private static volatile Prefs mSingleton = null;
     private SharedPreferences mPrefs = null;
 
-    private static final String PREFERENCES_FILE_NAME = "PrayerBookPreferences";
+    private static final String PREFERENCES_FILE_NAME = "BookPreferences";
     private static final String PREFERENCE_DATABASE_VERSION = "DatabaseVersion";
-    private static final String PREFERENCE_BOOK_TEXT_SCALAR = "PrayerTextScalar";
+    private static final String PREFERENCE_BOOK_TEXT_SCALAR = "TextScalar";
     private static final String PREFERENCE_USE_CLASSIC_THEME = "UseClassicTheme";
 
     private Prefs(Context ctx) {

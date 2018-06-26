@@ -14,19 +14,19 @@ import java.util.List;
 
 class DrawerChapterClickListener implements ListView.OnItemClickListener {
 
-    private final BiographyActivity biographyActivity;
+    private final ChapterActivity chapterActivity;
     private long sectionId;
     private List<Chapter> chapters;
 
-    public DrawerChapterClickListener(BiographyActivity biographyActivity, long sectionId, List<Chapter> chapters) {
-        this.biographyActivity = biographyActivity;
+    public DrawerChapterClickListener(ChapterActivity chapterActivity, long sectionId, List<Chapter> chapters) {
+        this.chapterActivity = chapterActivity;
         this.sectionId = sectionId;
         this.chapters = chapters;
     }
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-        biographyActivity.selectChapterInDrawer(position+1, sectionId, chapters);
+        chapterActivity.selectChapterInDrawer(position, sectionId, chapters);
     }
 
 

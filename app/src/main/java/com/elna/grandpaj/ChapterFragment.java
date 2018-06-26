@@ -9,18 +9,24 @@ import android.print.PrintAttributes;
 import android.print.PrintDocumentAdapter;
 import android.print.PrintManager;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.elna.grandpaj.entities.Chapter;
+import com.elna.util.L;
 import com.samskivert.mustache.Mustache;
 
 import java.io.InputStream;
@@ -36,6 +42,8 @@ import java.util.Locale;
 public class ChapterFragment extends Fragment {
 
     private WebView mWebView = null;
+    private ViewPager mViewPager;
+
     private Cursor chapterCursor;
     private float mScale = 1.0f;
 
@@ -65,8 +73,7 @@ public class ChapterFragment extends Fragment {
         sectionId = getBundledArgumentId(arguments, SECTION_ID_ARGUMENT);
         chapterId = getBundledArgumentId(arguments, CHAPTER_ID_ARGUMENT);
         chapterList = DB.get().getAllChaptersInSection(sectionId);
-        chapterCursor = DB.get().getChapter(sectionId, chapterId);
-        chapterCursor.moveToFirst();
+
         mScale = Prefs.get(App.getApp()).getBookTextScalar();
 
         setHasOptionsMenu(true);
@@ -81,32 +88,63 @@ public class ChapterFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        if (Build.VERSION.SDK_INT >= 19) {
-            getActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.chapter_fragment_sample, container, false);
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        mViewPager = (ViewPager) view.findViewById(R.id.viewpager);
+        mViewPager.setAdapter(new SamplePagerAdapter(chapterList.size()));
+        mViewPager.setRotationY(180);
+        mViewPager.setCurrentItem(chapterId.intValue(), true);
+    }
+
+    class SamplePagerAdapter extends PagerAdapter {
+
+        private int count;
+
+        public SamplePagerAdapter(int count) {
+            this.count = count;
         }
 
-        mWebView = new WebView(this.getActivity());
-        mWebView.getSettings().setSupportZoom(true);
-        mWebView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        mWebView.setKeepScreenOn(true);
+        @Override
+        public int getCount() {
+            return count;
+        }
 
-        mWebView.setOnTouchListener(new OnSwipeTouchListener((BiographyActivity) this.getActivity()) {
-
-            public void onSwipeRight() {
-                getBiographyActivity().selectChapterInDrawer(chapterId.intValue()+1, sectionId, chapterList);
-
-            }
-            public void onSwipeLeft() {
-                getBiographyActivity().selectChapterInDrawer(chapterId.intValue()-1, sectionId, chapterList);
-            }
+        @Override
+        public boolean isViewFromObject(View view, Object o) {
+            return o == view;
+        }
 
 
-        });
-        reloadChapter();
+        @Override
+        public Object instantiateItem(ViewGroup container, int position) {
 
-        return mWebView;
+            mWebView = new WebView(getActivity());
+            mWebView.getSettings().setSupportZoom(true);
+            mWebView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+            mWebView.setKeepScreenOn(true);
+            mWebView.setRotationY(180);
+            container.addView(mWebView);
+            chapterCursor = DB.get().getChapter(sectionId, new Long(position+1));
+            chapterCursor.moveToFirst();
+            reloadChapter();
+
+            return mWebView;
+        }
+
+
+        @Override
+        public void destroyItem(ViewGroup container, int position, Object object) {
+            container.removeView((View) object);
+
+        }
+
     }
+
 
     private void reloadChapter() {
         mWebView.loadDataWithBaseURL(null, getChapterHTML(), "text/html", "UTF-8", null);
@@ -215,9 +253,8 @@ public class ChapterFragment extends Fragment {
         InputStream is = getResources().openRawResource(R.raw.text_template);
         InputStreamReader isr = new InputStreamReader(is);
 
-        String result = Mustache.compiler().escapeHTML(false).compile(isr).execute(args);
+        return  Mustache.compiler().escapeHTML(false).compile(isr).execute(args);
 
-        return result;
     }
 
 

@@ -1,6 +1,5 @@
 package com.elna.grandpaj;
 
-import android.content.Context;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
@@ -12,11 +11,11 @@ import android.view.View;
 public class OnSwipeTouchListener implements View.OnTouchListener {
 
     private final GestureDetector gestureDetector;
-    private final BiographyActivity biographyActivity;
+    private final ChapterActivity chapterActivity;
 
-    public OnSwipeTouchListener (BiographyActivity biographyActivity){
-        this.biographyActivity = biographyActivity;
-        gestureDetector = new GestureDetector(biographyActivity, new GestureListener());
+    public OnSwipeTouchListener (ChapterActivity chapterActivity){
+        this.chapterActivity = chapterActivity;
+        gestureDetector = new GestureDetector(chapterActivity, new GestureListener());
     }
 
     @Override
@@ -24,8 +23,8 @@ public class OnSwipeTouchListener implements View.OnTouchListener {
         return gestureDetector.onTouchEvent(event);
     }
 
-    public BiographyActivity getBiographyActivity() {
-        return biographyActivity;
+    public ChapterActivity getChapterActivity() {
+        return chapterActivity;
     }
 
     private final class GestureListener extends GestureDetector.SimpleOnGestureListener {
@@ -37,6 +36,7 @@ public class OnSwipeTouchListener implements View.OnTouchListener {
         public boolean onDown(MotionEvent e) {
             return true;
         }
+
 
         @Override
         public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
@@ -80,5 +80,10 @@ public class OnSwipeTouchListener implements View.OnTouchListener {
 
     public void onSwipeBottom() {
     }
+
+    public GestureDetector getGestureDetector(){
+        return  gestureDetector;
+    }
+
 }
 

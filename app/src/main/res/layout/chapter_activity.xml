@@ -14,14 +14,16 @@
         android:layout_height="match_parent">
 
         <android.support.v7.widget.Toolbar
-            android:id="@+id/prayer_toolbar"
-            android:layout_height="wrap_content"
+            android:id="@+id/chapter_toolbar"
             android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/grandpaj_primary"
             android:minHeight="?attr/actionBarSize"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
             app:layout_scrollFlags="scroll|enterAlways"
-            android:background="@color/grandpaj_primary" />
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+
+
         <FrameLayout
             android:id="@+id/chapter_container"
             android:layout_width="match_parent"

@@ -27,7 +27,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.elna.grandpaj.BiographyActivity"
+            android:name="com.elna.grandpaj.ChapterActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/app_name" />
 

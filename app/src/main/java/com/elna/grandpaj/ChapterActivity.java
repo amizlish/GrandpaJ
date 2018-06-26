@@ -14,7 +14,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.GestureDetector;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -26,7 +25,7 @@ import com.elna.grandpaj.entities.Chapter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BiographyActivity extends AppCompatActivity {
+public class ChapterActivity extends AppCompatActivity {
 
     private static final String ARG_SECTION_ID = "section_id";
 
@@ -38,7 +37,7 @@ public class BiographyActivity extends AppCompatActivity {
     private String mTitle;
 
     public static Intent newIntent(Context context, Category category) {
-        Intent intent = new Intent(context, BiographyActivity.class);
+        Intent intent = new Intent(context, ChapterActivity.class);
         intent.putExtra(ARG_SECTION_ID, category.getSectionLink());
 
         return intent;
@@ -58,7 +57,7 @@ public class BiographyActivity extends AppCompatActivity {
         super.onCreate(state);
 
         setContentView(R.layout.chapter_activity);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.prayer_toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.chapter_toolbar);
 
         if (Build.VERSION.SDK_INT >= 21) {
             String appName = getString(R.string.app_name);
@@ -83,7 +82,7 @@ public class BiographyActivity extends AppCompatActivity {
 
             prepareLeftNavigation(sectionId);
 
-            ChapterFragment fragment = ChapterFragment.newInstance(sectionId, 1);
+            ChapterFragment fragment = ChapterFragment.newInstance(sectionId, 0);
             FragmentManager fm = getSupportFragmentManager();
             FragmentTransaction ft = fm.beginTransaction();
             ft.add(R.id.chapter_container, fragment);
