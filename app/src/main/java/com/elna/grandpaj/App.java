@@ -1,10 +1,12 @@
 package com.elna.grandpaj;
 
+import android.annotation.SuppressLint;
 import android.app.Application;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Looper;
 import android.support.v7.app.AppCompatDelegate;
+
 import com.elna.util.L;
 import com.squareup.otto.Bus;
 
@@ -13,6 +15,7 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 
 public class App extends Application {
@@ -23,7 +26,7 @@ public class App extends Application {
     private Handler mBackgroundHandler;
 
     private static volatile App mApp;
-    private static final int LatestDatabaseVersion = 4;
+    private static final int LatestDatabaseVersion = 1;
 
     public static App getApp() {
         return mApp;
@@ -68,6 +71,7 @@ public class App extends Application {
             }
         }
     }
+
 
     public static void postOnBus(final Object event) {
         if (Looper.myLooper() == Looper.getMainLooper()) {

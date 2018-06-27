@@ -33,7 +33,6 @@
         android:layout_marginEnd="16dp"
         android:layout_centerVertical="true"
         android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-        tools:text="Onderricht: Tafelen van het Goddelijk Plan"
         android:textColor="@color/primary_text_default_material_light"
         android:maxLines="1"
         android:ellipsize="end" />

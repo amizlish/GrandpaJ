@@ -9,21 +9,30 @@ import android.print.PrintAttributes;
 import android.print.PrintDocumentAdapter;
 import android.print.PrintManager;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import com.elna.grandpaj.entities.Chapter;
+import com.elna.util.L;
 import com.samskivert.mustache.Mustache;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -33,16 +42,26 @@ import java.util.Locale;
 public class ChapterFragment extends Fragment {
 
     private WebView mWebView = null;
+    private ViewPager mViewPager;
+
     private Cursor chapterCursor;
     private float mScale = 1.0f;
 
     private static final String SECTION_ID_ARGUMENT = "section_id";
+    private static final String CHAPTER_ID_ARGUMENT = "chapter_id";
+    private long sectionId;
+    private Long chapterId;
+    private List<Chapter> chapterList;
 
-    public static ChapterFragment newInstance(long sectionId) {
+    public static ChapterFragment newInstance(long sectionId, long chapterId) {
         ChapterFragment fragment = new ChapterFragment();
         Bundle args = new Bundle();
         args.putLong(SECTION_ID_ARGUMENT, sectionId);
+        args.putLong(CHAPTER_ID_ARGUMENT, chapterId);
+
         fragment.setArguments(args);
+
+
         return fragment;
     }
 
@@ -51,31 +70,81 @@ public class ChapterFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         Bundle arguments = getArguments();
-        long sectionId = arguments.getLong(SECTION_ID_ARGUMENT, -1);
-        if (sectionId == -1) {
-            throw new IllegalArgumentException("You must provide a prayer id to this fragment");
-        }
-        chapterCursor = DB.get().getFirstChapter(sectionId);
-        chapterCursor.moveToFirst();
+        sectionId = getBundledArgumentId(arguments, SECTION_ID_ARGUMENT);
+        chapterId = getBundledArgumentId(arguments, CHAPTER_ID_ARGUMENT);
+        chapterList = DB.get().getAllChaptersInSection(sectionId);
+
         mScale = Prefs.get(App.getApp()).getBookTextScalar();
 
         setHasOptionsMenu(true);
     }
 
+    private long getBundledArgumentId(Bundle arguments, String argName) {
+        long result = arguments.getLong(argName, -1);
+        if (result == -1) {
+            throw new IllegalArgumentException("You must provide a " + argName + "  to this fragment");
+        }
+        return result;
+    }
+
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        if (Build.VERSION.SDK_INT >= 19) {
-            getActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.chapter_fragment_sample, container, false);
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        mViewPager = (ViewPager) view.findViewById(R.id.viewpager);
+        mViewPager.setAdapter(new SamplePagerAdapter(chapterList.size()));
+        mViewPager.setRotationY(180);
+        mViewPager.setCurrentItem(chapterId.intValue(), true);
+    }
+
+    class SamplePagerAdapter extends PagerAdapter {
+
+        private int count;
+
+        public SamplePagerAdapter(int count) {
+            this.count = count;
         }
 
-        mWebView = new WebView(this.getActivity());
-        mWebView.getSettings().setSupportZoom(true);
-        mWebView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        mWebView.setKeepScreenOn(true);
-        reloadChapter();
+        @Override
+        public int getCount() {
+            return count;
+        }
 
-        return mWebView;
+        @Override
+        public boolean isViewFromObject(View view, Object o) {
+            return o == view;
+        }
+
+
+        @Override
+        public Object instantiateItem(ViewGroup container, int position) {
+
+            mWebView = new WebView(getActivity());
+            mWebView.getSettings().setSupportZoom(true);
+            mWebView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+            mWebView.setKeepScreenOn(true);
+            mWebView.setRotationY(180);
+            container.addView(mWebView);
+            chapterCursor = DB.get().getChapter(sectionId, new Long(position+1));
+            chapterCursor.moveToFirst();
+            reloadChapter();
+
+            return mWebView;
+        }
+
+
+        @Override
+        public void destroyItem(ViewGroup container, int position, Object object) {
+            container.removeView((View) object);
+
+        }
+
     }
+
 
     private void reloadChapter() {
         mWebView.loadDataWithBaseURL(null, getChapterHTML(), "text/html", "UTF-8", null);
@@ -104,32 +173,18 @@ public class ChapterFragment extends Fragment {
             case R.id.action_increase_text_size:
                 if (mScale < 1.6f) {
                     mScale += 0.05f;
-                    Prefs.get(App.getApp()).setPrayerTextScalar(mScale);
+                    Prefs.get(App.getApp()).setBookTextScalar(mScale);
                     reloadChapter();
                 }
                 break;
             case R.id.action_decrease_text_size:
                 if (mScale > .75) {
                     mScale -= 0.05f;
-                    com.elna.grandpaj.Prefs.get(App.getApp()).setPrayerTextScalar(mScale);
+                    com.elna.grandpaj.Prefs.get(App.getApp()).setBookTextScalar(mScale);
                     reloadChapter();
                 }
                 break;
-//            case R.id.action_classic_theme:
-//                boolean useClassic = !item.isChecked(); // toggle the value
-//                item.setChecked(useClassic);
-//                com.elna.grandpaj.Prefs.get(App.getApp()).setUseClassicTheme(useClassic);
-//                reloadChapter();
-//                break;
-//            case R.id.action_share_prayer:
-//                Intent sharingIntent = new Intent(Intent.ACTION_SEND);
-//                sharingIntent.setType("text/plain");
-//                sharingIntent.putExtra(Intent.EXTRA_TEXT, getPrayerText());
-//                startActivity(Intent.createChooser(sharingIntent, "Share via"));
-//                break;
-//            case R.id.action_print_prayer:
-//                printPrayer();
-//                break;
+
             default:
                 return false;
         }
@@ -198,28 +253,9 @@ public class ChapterFragment extends Fragment {
         InputStream is = getResources().openRawResource(R.raw.text_template);
         InputStreamReader isr = new InputStreamReader(is);
 
-        String result = Mustache.compiler().escapeHTML(false).compile(isr).execute(args);
+        return  Mustache.compiler().escapeHTML(false).compile(isr).execute(args);
 
-        return result;
     }
 
 
-    @TargetApi(19) @SuppressWarnings("deprecation")
-    private void printPrayer() {
-        if (mWebView == null) {
-            // shouldn't happen, but just in case
-            return;
-        }
-
-        PrintManager manager = (PrintManager)getActivity().getSystemService(Context.PRINT_SERVICE);
-        PrintDocumentAdapter adapter;
-        if (Build.VERSION.SDK_INT >= 21) {
-            adapter = mWebView.createPrintDocumentAdapter("Prayer");
-        } else {
-            adapter = mWebView.createPrintDocumentAdapter();
-        }
-
-        String jobName = getString(R.string.app_name) + " " + getString(R.string.document);
-        manager.print(jobName, adapter, new PrintAttributes.Builder().build());
-    }
 }

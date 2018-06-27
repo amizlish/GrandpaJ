@@ -17,9 +17,9 @@ public class Prefs {
     private static volatile Prefs mSingleton = null;
     private SharedPreferences mPrefs = null;
 
-    private static final String PREFERENCES_FILE_NAME = "PrayerBookPreferences";
+    private static final String PREFERENCES_FILE_NAME = "BookPreferences";
     private static final String PREFERENCE_DATABASE_VERSION = "DatabaseVersion";
-    private static final String PREFERENCE_BOOK_TEXT_SCALAR = "PrayerTextScalar";
+    private static final String PREFERENCE_BOOK_TEXT_SCALAR = "TextScalar";
     private static final String PREFERENCE_USE_CLASSIC_THEME = "UseClassicTheme";
 
     private Prefs(Context ctx) {
@@ -39,7 +39,7 @@ public class Prefs {
     }
 
     public int getDatabaseVersion() {
-        return mPrefs.getInt(PREFERENCE_DATABASE_VERSION, 0);
+        return mPrefs.getInt(PREFERENCE_DATABASE_VERSION, 1);
     }
 
 
@@ -52,7 +52,7 @@ public class Prefs {
         return mPrefs.getFloat(PREFERENCE_BOOK_TEXT_SCALAR, 1.0f);
     }
 
-    public void setPrayerTextScalar(float scalar) {
+    public void setBookTextScalar(float scalar) {
         mPrefs.edit().putFloat(PREFERENCE_BOOK_TEXT_SCALAR, scalar).apply();
     }
 

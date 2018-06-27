@@ -1,13 +1,11 @@
 package com.elna.grandpaj;
 
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -20,12 +18,8 @@ import android.view.ViewGroup;
 
 import com.elna.grandpaj.entities.Category;
 import com.elna.util.DividerItemDecoration;
-import com.squareup.otto.Subscribe;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  *
@@ -93,9 +87,7 @@ public class CategoriesFragment extends Fragment implements CategoriesAdapter.On
                 AboutDialogFragment adf = new AboutDialogFragment();
                 adf.show(getFragmentManager(), "dialog");
                 break;
-//            case R.id.search_prayers:
-//                onSearch();
-//                break;
+
             default:
                 return false;
         }
@@ -129,21 +121,17 @@ public class CategoriesFragment extends Fragment implements CategoriesAdapter.On
 
     @Override
     public void onCategorySelected(int categoryId) {
-//        CategoryPrayersFragment fragment = CategoryPrayersFragment.newInstance(category);
-//
-//        FragmentTransaction ft = getFragmentManager().beginTransaction();
-//        ft.setCustomAnimations(R.anim.enter, R.anim.exit, R.anim.pop_enter, R.anim.pop_exit);
-//        ft.replace(R.id.main_container, fragment, CategoryPrayersFragment.CATEGORYPRAYERS_TAG);
-//        ft.addToBackStack(null);
-//        ft.commit();
 
         List<Category> categories = DB.get().getCategories();
         Category category = categories.get(categoryId);
         String tableLink = category.getTableLink();
         Intent intent = null;
         if (tableLink.equals(DB.BIO_BOOK_TABLE)) {
-            intent = BiographyActivity.newIntent(getContext(), category);
+            intent = ChapterActivity.newIntent(getContext(), category);
+        } else if (tableLink.equals(DB.BIO_PICS_TABLE)) {
+            intent = BioPictureActivity.newIntent(getContext(), category);
         }
+
         startActivity(intent);
 
         getActivity().overridePendingTransition(R.anim.enter, R.anim.exit);
@@ -160,17 +148,6 @@ public class CategoriesFragment extends Fragment implements CategoriesAdapter.On
             behavior.onNestedFling(coordinatorLayout, appBarLayout, null, 0, -10000, false);
         }
     }
-
-//    private void onSearch() {
-//        SearchFragment sf = new SearchFragment();
-//        FragmentTransaction ft = getFragmentManager().beginTransaction();
-//        ft.setCustomAnimations(R.anim.enter, R.anim.exit, R.anim.pop_enter, R.anim.pop_exit);
-//        ft.replace(R.id.main_container, sf, SearchFragment.SEARCHPRAYERS_TAG);
-//        ft.addToBackStack(null);
-//        ft.commit();
-//    }
-
-
 
 
 
