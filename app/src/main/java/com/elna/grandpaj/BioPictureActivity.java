@@ -7,11 +7,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.ListView;
-import android.widget.TextView;
+
 
 import com.elna.grandpaj.entities.BioPicture;
 import com.elna.grandpaj.entities.Category;

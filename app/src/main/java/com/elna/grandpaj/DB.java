@@ -33,9 +33,6 @@ public class DB {
     public final static String PIC_TITLE      = "title";
     public final static String PIC_IMAGE_BLOB      = "image";
 
-
-
-
     private static DB singleton = null;
     public static File databaseFile;
 
@@ -58,7 +55,6 @@ public class DB {
 
         return singleton;
     }
-
 
 
     private List<Category> loadAllCategories() {
@@ -188,17 +184,4 @@ public class DB {
     }
 
 
-    public void insertChapter(int chapterNumber, String formattedChapter) {
-        if (!liteDatabase.isOpen())
-            liteDatabase = openDB();
-
-        ContentValues values = new ContentValues();
-        values.put(TEXT_COLUMN, formattedChapter);
-        values.put(SECTION_LINK_COLUMN, 12);
-        values.put(CHAPTER_ID_COLUMN, chapterNumber);
-
-        liteDatabase.insert(BIOGRAPHY_TABLE, null, values);
-        liteDatabase.close();
-
-    }
 }

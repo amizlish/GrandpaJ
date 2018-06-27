@@ -51,7 +51,7 @@ public class App extends Application {
         int dbVersion = Prefs.get(this).getDatabaseVersion();
         File databaseFile = new File(getFilesDir(), "pjdb.db");
         DB.databaseFile = databaseFile;
-        if (dbVersion != LatestDatabaseVersion || 1 == 1) {
+        if (dbVersion != LatestDatabaseVersion) {
             // then we need to copy over the latest database
             L.i("database file: " + databaseFile.getAbsolutePath());
             try {
