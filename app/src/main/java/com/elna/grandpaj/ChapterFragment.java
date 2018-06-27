@@ -180,7 +180,7 @@ public class ChapterFragment extends Fragment {
             case R.id.action_decrease_text_size:
                 if (mScale > .75) {
                     mScale -= 0.05f;
-                    com.elna.grandpaj.Prefs.get(App.getApp()).setBookTextScalar(mScale);
+                    Prefs.get(App.getApp()).setBookTextScalar(mScale);
                     reloadChapter();
                 }
                 break;
