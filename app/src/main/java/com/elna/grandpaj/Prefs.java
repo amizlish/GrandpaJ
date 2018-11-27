@@ -39,8 +39,9 @@ public class Prefs {
     }
 
     public int getDatabaseVersion() {
-        return mPrefs.getInt(PREFERENCE_DATABASE_VERSION, 12);
+        return mPrefs.getInt(PREFERENCE_DATABASE_VERSION, 0);
     }
+
 
 
     public void setDatabaseVersion(int version) {
