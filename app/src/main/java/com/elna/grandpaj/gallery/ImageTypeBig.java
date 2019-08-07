@@ -6,6 +6,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.elna.grandpaj.R;
+import com.github.chrisbanes.photoview.PhotoView;
 import com.mindorks.placeholderview.Animation;
 import com.mindorks.placeholderview.PlaceHolderView;
 import com.mindorks.placeholderview.annotations.Animate;
@@ -24,8 +25,11 @@ import com.mindorks.placeholderview.annotations.View;
 @Layout(R.layout.gallery_item_big)
 public class ImageTypeBig {
 
-    @View(R.id.imageView)
-    private ImageView imageView;
+    @View(R.id.photo_view)
+    private PhotoView photoView;
+
+//    PhotoView photoView = (PhotoView) findViewById(R.id.photo_view);
+    //photoView.setImageResource(R.drawable.image);
 
     @View(R.id.captionTxt)
     private TextView captionTxt;
@@ -45,11 +49,11 @@ public class ImageTypeBig {
     @Resolve
     private void onResolved() {
         captionTxt.setText(mCaption);
-        Glide.with(mContext).load(mImageBlob).into(imageView);
+        Glide.with(mContext).load(mImageBlob).into(photoView);
     }
 
-    @LongClick(R.id.imageView)
-    private void onLongClick(){
-        mPlaceHolderView.removeView(this);
-    }
+//    @LongClick(R.id.imageView)
+//    private void onLongClick(){
+//        mPlaceHolderView.removeView(this);
+//    }
 }
