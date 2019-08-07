@@ -13,8 +13,7 @@
         <com.github.chrisbanes.photoview.PhotoView
             android:id="@+id/photo_view"
             android:layout_width="match_parent"
-            android:layout_height="250dp"
-            android:scaleType="centerCrop"
+            android:layout_height="300dp"
             android:src="@android:color/holo_orange_dark"/>
 
         <!--<ImageView-->
