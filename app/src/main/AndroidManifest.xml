@@ -10,8 +10,7 @@
         android:name="com.elna.grandpaj.App">
         <meta-data
             android:name="com.google.android.gms.version"
-            android:value="@integer/google_play_services_version" />
-
+            android:value="AIzaSyCwe2b" />
         <!--
              The API key for Google Maps-based APIs.
         -->
@@ -36,7 +35,11 @@
             android:configChanges="orientation|screenSize"
             android:label="@string/app_name" />
 
-        <activity android:name=".MapsActivity" />
+        <activity
+            android:name="com.elna.grandpaj.timeline.TimeLineActivity"
+            android:configChanges="orientation|screenSize"
+            android:label="@string/app_name" />
+
     </application>
 
 </manifest>

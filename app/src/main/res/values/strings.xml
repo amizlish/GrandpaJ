@@ -6,6 +6,7 @@
     <string name="app_name">GrandpaJ</string>
     <string name="stories">סיפורים</string>
     <string name="about">אודות</string>
+    <string name="timeline">ציר זמן</string>
     <string name="search">Search</string>
     <string name="search_ellipsis">Search…</string>
     <string name="favorites">Favorites</string>

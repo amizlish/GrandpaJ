@@ -26,7 +26,7 @@ public class App extends Application {
     private Handler mBackgroundHandler;
 
     private static volatile App mApp;
-    private static final int LatestDatabaseVersion = 1;
+    private static final int LatestDatabaseVersion = 11;
 
     public static App getApp() {
         return mApp;
