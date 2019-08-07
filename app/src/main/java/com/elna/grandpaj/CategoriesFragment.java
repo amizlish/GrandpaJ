@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.elna.grandpaj.entities.Category;
+import com.elna.grandpaj.timeline.TimeLineActivity;
 import com.elna.util.DividerItemDecoration;
 
 import java.util.List;
@@ -129,7 +130,9 @@ public class CategoriesFragment extends Fragment implements CategoriesAdapter.On
         if (tableLink.equals(DB.BIO_BOOK_TABLE)) {
             intent = ChapterActivity.newIntent(getContext(), category);
         } else if (tableLink.equals(DB.BIO_PICS_TABLE)) {
-            intent = BioPictureActivity.newIntent(getContext(), category);
+           intent = BioPictureActivity.newIntent(getContext(), category);
+        } else if (tableLink.equals(DB.BIO_TIMELINE_TABLE)) {
+            intent = TimeLineActivity.newIntent(getContext(), category);
         }
 
         startActivity(intent);

@@ -18,6 +18,7 @@ public class DB {
     private final static String BIOGRAPHY_TABLE    = "bio_book";
     private final static String CATEGORY_TABLE    = "category";
     public static final String BIO_PICS_TABLE = "bio_pics";
+    public static final String BIO_TIMELINE_TABLE = "bio_timeline";
     public static final String BIO_LOCATIONS_TABLE = "bio_locations";
     public static final String BIO_BOOK_TABLE = "bio_book";
 
